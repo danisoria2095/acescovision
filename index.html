@@ -132,6 +132,15 @@
         let votos = { p1: "", p2: "", p3: "" };
         let currentCountry = "";
         let currentCardId = "";
+        // BLOQUEO ANTI-TRAMPAS: Comprova si ja ha votat abans
+        if (localStorage.getItem('acescoVotado') === 'true') {
+            // Oculta la intro y muestra la pantalla de bloqueo
+            document.getElementById('screen-intro').classList.remove('active');
+            let successScreen = document.getElementById('screen-success');
+            successScreen.classList.add('active');
+            // Cambia el mensaje de éxito por el de bloqueo
+            successScreen.innerHTML = '<h1 style="font-size: 4rem; margin: 0;">🛑</h1><h2 style="color: var(--amarillo-brillo);">Ja has votat!</h2><p class="intro-text">Només es permet un vot per dispositiu per garantir unes votacions justes. Gaudeix de la gala!</p>';
+        }
 
         // Funció per canviar de pantalles
         function showScreen(screenId) {
@@ -189,6 +198,8 @@
                 body: formData
             })
             .then(response => {
+                // GUARDA EN LA MEMORIA DEL MÓVIL QUE YA HA VOTADO
+                localStorage.setItem('acescoVotado', 'true');
                 showScreen('screen-success');
             })
             .catch(error => {
